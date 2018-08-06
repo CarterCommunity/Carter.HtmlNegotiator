@@ -1,19 +1,18 @@
-﻿namespace HtmlNegotiator
+﻿namespace Carter.HtmlNegotiator
 {
     using System.Net;
     using System.Threading;
     using System.Threading.Tasks;
     using Carter;
-    using HandlebarsDotNet;
     using Microsoft.AspNetCore.Http;
 
     public class HtmlNegotiator : IResponseNegotiator
     {
-        private readonly IViewLocator viewLocator;
+        private readonly IViewRenderer viewRenderer;
 
-        public HtmlNegotiator(IViewLocator viewLocator)
+        public HtmlNegotiator(IViewRenderer viewRenderer)
         {
-            this.viewLocator = viewLocator;
+            this.viewRenderer = viewRenderer;
         }
 
         public bool CanHandle(Microsoft.Net.Http.Headers.MediaTypeHeaderValue accept)
@@ -23,20 +22,19 @@
 
         public async Task Handle(HttpRequest req, HttpResponse res, object model, CancellationToken cancellationToken)
         {
-            var source = viewLocator.GetView(model, res.HttpContext);
-            if (string.IsNullOrEmpty(source))
+            var view = viewRenderer.RenderView(req.HttpContext, model);
+            
+            if (string.IsNullOrEmpty(view))
             {
                 res.StatusCode = 500;
                 res.ContentType = "text/plain";
                 await res.WriteAsync("View not found", cancellationToken);
+                return;
             }
-
-            var template = Handlebars.Compile(source);
 
             res.ContentType = "text/html";
             res.StatusCode = (int)HttpStatusCode.OK;
-
-            await res.WriteAsync(template(model), cancellationToken);
+            await res.WriteAsync(view, cancellationToken);
         }
     }
 }
