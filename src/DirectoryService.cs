@@ -10,7 +10,7 @@
         {
             var files = Directory.GetFiles(path, $"{viewname}.*", SearchOption.TopDirectoryOnly);
             return files
-                .Where(filename => IsValidExtension(filename, extensions))
+                .Where(filename => this.IsValidExtension(filename, extensions))
                 .Select(file => new ViewTemplate
                 {
                     Name = viewname,

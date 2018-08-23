@@ -9,7 +9,7 @@ namespace Carter.HtmlNegotiator
 
         public HandlebarsViewEngine()
         {
-            SupportedExtensions = new List<string>{ "hbs" };
+            this.SupportedExtensions = new List<string>{ "hbs" };
         }
 
         public string Render(ViewTemplate viewTemplate, object model)

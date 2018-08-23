@@ -7,7 +7,7 @@ namespace Carter.HtmlNegotiator
     {
         public HtmlNegotiatorConfiguration(Action<HtmlNegotiatorConfigurator> configuration = default)
         {
-            ViewLocationConventions = new List<Func<ViewLocationContext, string>>
+            this.ViewLocationConventions = new List<Func<ViewLocationContext, string>>
             {
                 viewLocationContext => viewLocationContext.ViewName,
                 viewLocationContext => $"views/{viewLocationContext.ViewName}",

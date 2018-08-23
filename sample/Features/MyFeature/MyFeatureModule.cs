@@ -6,7 +6,7 @@ namespace Carter.HtmlNegotiator.Sample.Features.MyFeature
     {
         public MyFeatureModule() : base("/myfeature")
         {
-            Get("/",
+            this.Get("/",
                 async (req, res, routeData) =>
                 {
                     await res.AsHtml("index", new MyViewModel{Title = "Hello World!", Message = "Hello from a Custom View Location"});

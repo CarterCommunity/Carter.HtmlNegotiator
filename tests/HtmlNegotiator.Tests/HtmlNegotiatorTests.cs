@@ -16,8 +16,8 @@ namespace HtmlNegotiator.Tests
 
         public HtmlNegotiatorTests()
         {
-            viewRenderer = A.Fake<IViewRenderer>();
-            htmlNegotiator = new HtmlNegotiator(viewRenderer);
+            this.viewRenderer = A.Fake<IViewRenderer>();
+            this.htmlNegotiator = new HtmlNegotiator(this.viewRenderer);
         }
 
         [Fact]
@@ -56,7 +56,7 @@ namespace HtmlNegotiator.Tests
             
             A.CallTo(() => httpResponse.Body).Returns(new MemoryStream());
             A.CallTo(() => httpRequest.HttpContext).Returns(httpContext);
-            A.CallTo(() => viewRenderer.RenderView(A<HttpContext>.Ignored, A<object>.Ignored)).Returns("Some HTML");
+            A.CallTo(() => this.viewRenderer.RenderView(A<HttpContext>.Ignored, A<object>.Ignored)).Returns("Some HTML");
             
             // ACT
             await this.htmlNegotiator.Handle(httpRequest, httpResponse, null, CancellationToken.None);
@@ -77,7 +77,7 @@ namespace HtmlNegotiator.Tests
             
             A.CallTo(() => httpResponse.Body).Returns(new MemoryStream());
             A.CallTo(() => httpRequest.HttpContext).Returns(httpContext);
-            A.CallTo(() => viewRenderer.RenderView(httpContext, A<object>.Ignored)).Returns(null);
+            A.CallTo(() => this.viewRenderer.RenderView(httpContext, A<object>.Ignored)).Returns(null);
             
             // ACT
             await this.htmlNegotiator.Handle(httpRequest, httpResponse, null, CancellationToken.None);

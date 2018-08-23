@@ -16,7 +16,7 @@ namespace Carter.HtmlNegotiator
         }
         public ViewTemplate ResolveView(ViewLocationContext viewLocationContext)
         {
-            foreach (var convention in conventions)
+            foreach (var convention in this.conventions)
             {
                 var viewLocation = convention.Invoke(viewLocationContext);
                 
@@ -25,7 +25,7 @@ namespace Carter.HtmlNegotiator
                     continue;
                 }
                 
-                var viewTemplate = viewLocator.LocateView(Path.Combine(viewLocationContext.RootPath, viewLocation));
+                var viewTemplate = this.viewLocator.LocateView(Path.Combine(viewLocationContext.RootPath, viewLocation));
                 if (viewTemplate != null)
                 {
                     return viewTemplate;
