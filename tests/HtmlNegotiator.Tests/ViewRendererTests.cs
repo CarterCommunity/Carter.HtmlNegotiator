@@ -19,28 +19,28 @@ namespace HtmlNegotiator.Tests
         {
             var hostingEnvironment = A.Fake<IHostingEnvironment>();
             var serviceProvider = A.Fake<IServiceProvider>();
-            context = A.Fake<HttpContext>();
-            engine = A.Fake<IViewEngine>();
-            resolver = A.Fake<IViewResolver>();
+            this.context = A.Fake<HttpContext>();
+            this.engine = A.Fake<IViewEngine>();
+            this.resolver = A.Fake<IViewResolver>();
             
             A.CallTo(() => hostingEnvironment.ContentRootPath).Returns("some/path");
             A.CallTo(() => serviceProvider.GetService(typeof(IHostingEnvironment))).Returns(hostingEnvironment);
-            A.CallTo(() => context.Items).Returns(new Dictionary<object, object> {{"ModuleType", typeof(CarterModule)}});
-            A.CallTo(() => context.RequestServices).Returns(serviceProvider);
+            A.CallTo(() => this.context.Items).Returns(new Dictionary<object, object> {{"ModuleType", typeof(CarterModule)}});
+            A.CallTo(() => this.context.RequestServices).Returns(serviceProvider);
         }
         
         [Fact]
         public void Should_Render_A_Resolved_View_As_A_String()
         {
             // ARRANGE
-            A.CallTo(() => resolver.ResolveView(A<ViewLocationContext>.Ignored)).Returns(new ViewTemplate{ Extension = "hbs", Source = ()=>"Source"});
-            A.CallTo(() => engine.SupportedExtensions).Returns(new List<string>{ "hbs" });
-            A.CallTo(() => engine.Render(A<ViewTemplate>.Ignored, null)).Returns("HTML");
+            A.CallTo(() => this.resolver.ResolveView(A<ViewLocationContext>.Ignored)).Returns(new ViewTemplate{ Extension = "hbs", Source = ()=>"Source"});
+            A.CallTo(() => this.engine.SupportedExtensions).Returns(new List<string>{ "hbs" });
+            A.CallTo(() => this.engine.Render(A<ViewTemplate>.Ignored, null)).Returns("HTML");
             
-            var viewRenderer = new ViewRenderer(resolver, new List<IViewEngine> {engine});
+            var viewRenderer = new ViewRenderer(this.resolver, new List<IViewEngine> { this.engine});
             
             // ACT
-            var view = viewRenderer.RenderView(context, null);
+            var view = viewRenderer.RenderView(this.context, null);
             
             // ASSERT
             Assert.NotNull(view);
@@ -50,12 +50,12 @@ namespace HtmlNegotiator.Tests
         public void Should_Return_Null_When_No_View_Is_Resolved()
         {
             // ARRANGE
-            A.CallTo(() => resolver.ResolveView(A<ViewLocationContext>.Ignored)).Returns(null);
+            A.CallTo(() => this.resolver.ResolveView(A<ViewLocationContext>.Ignored)).Returns(null);
             
-            var viewRenderer = new ViewRenderer(resolver, new List<IViewEngine> {engine});
+            var viewRenderer = new ViewRenderer(this.resolver, new List<IViewEngine> { this.engine});
             
             // ACT
-            var view = viewRenderer.RenderView(context, null);
+            var view = viewRenderer.RenderView(this.context, null);
             
             // ASSERT
             Assert.Null(view);

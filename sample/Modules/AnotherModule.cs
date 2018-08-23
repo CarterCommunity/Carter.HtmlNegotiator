@@ -6,7 +6,7 @@ namespace Carter.HtmlNegotiator.Sample.Modules
     {
         public AnotherModule() : base("/another")
         {
-            Get("/",
+            this.Get("/",
                 async (req, res, routeData) =>
                 {
                     await res.AsHtml("index", new MyViewModel{Title = "Hello World!", Message = "Hello from Another Module!"});

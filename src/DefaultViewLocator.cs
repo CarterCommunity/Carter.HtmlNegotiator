@@ -9,7 +9,8 @@
     {
         private readonly IEnumerable<IViewEngine> viewEngines;
         private readonly IDirectoryService directoryService;
-        private static readonly IDictionary<string, ViewTemplate> viewCache = new Dictionary<string, ViewTemplate>();
+        
+        private static readonly IDictionary<string, ViewTemplate> ViewCache = new Dictionary<string, ViewTemplate>();
 
         public DefaultViewLocator(IEnumerable<IViewEngine> viewEngines, IDirectoryService directoryService)
         {
@@ -20,27 +21,27 @@
         public ViewTemplate LocateView(string viewLocation)
         {
             return GetViewFromCache(viewLocation) 
-                   ?? LocateAndCacheView(viewLocation);
+                   ?? this.LocateAndCacheView(viewLocation);
         }
 
-        private ViewTemplate GetViewFromCache(string viewLocation)
+        private static ViewTemplate GetViewFromCache(string viewLocation)
         {
-            return viewCache.ContainsKey(viewLocation)
-                ? viewCache[viewLocation]
+            return ViewCache.ContainsKey(viewLocation)
+                ? ViewCache[viewLocation]
                 : null;
         }
 
         private ViewTemplate LocateAndCacheView(string viewLocation)
         {
-            var supportedExtensions = viewEngines.SelectMany(e => e.SupportedExtensions).Distinct().ToList();
+            var supportedExtensions = this.viewEngines.SelectMany(e => e.SupportedExtensions).Distinct().ToList();
 
             var viewName = Path.GetFileNameWithoutExtension(viewLocation);
-            var path = viewLocation.Substring(0, viewLocation.LastIndexOf(viewName));
+            var path = viewLocation.Substring(0, viewLocation.LastIndexOf(viewName, StringComparison.Ordinal));
 
             IList<ViewTemplate> viewTemplates = null;
             try
             {
-                viewTemplates = directoryService.GetViews(path, viewName, supportedExtensions).ToList();
+                viewTemplates = this.directoryService.GetViews(path, viewName, supportedExtensions).ToList();
             }
             catch (DirectoryNotFoundException)
             {
@@ -49,7 +50,7 @@
             if (viewTemplates?.Count == 1)
             {
                 var viewTemplate = viewTemplates.Single();
-                viewCache.Add(viewLocation, viewTemplate);
+                ViewCache.Add(viewLocation, viewTemplate);
                 return viewTemplate;
             }
 
@@ -61,17 +62,15 @@
             return null;
         }
 
-        private string GetAmbiguousViewsExceptionMessage(IEnumerable<ViewTemplate> viewTemplates)
+        private static string GetAmbiguousViewsExceptionMessage(IEnumerable<ViewTemplate> viewTemplates)
         {
             return
                 $"Multiple views found.{Environment.NewLine}Views:{Environment.NewLine}{string.Join(Environment.NewLine, viewTemplates.Select(GethFullPath))}";
         }
 
-        private string GethFullPath(ViewTemplate template)
+        private static string GethFullPath(ViewTemplate template)
         {
             return string.Concat(template.Location, "/", template.Name, ".", template.Extension);
         }
-
-        
     }
 }

@@ -20,12 +20,12 @@ namespace Carter.HtmlNegotiator
 
         public string RenderView(HttpContext httpContext, object model)
         {
-            var viewTemplate = viewResolver.ResolveView(GetViewLocationContext(httpContext, model));
+            var viewTemplate = this.viewResolver.ResolveView(this.GetViewLocationContext(httpContext, model));
             if (viewTemplate == null)
             {
                 return null;
             }
-            var viewEngine = viewEngines.FirstOrDefault(ve => ve.SupportedExtensions.Any(e => e.Equals(viewTemplate.Extension.TrimStart('.'), StringComparison.OrdinalIgnoreCase)));
+            var viewEngine = this.viewEngines.FirstOrDefault(ve => ve.SupportedExtensions.Any(e => e.Equals(viewTemplate.Extension.TrimStart('.'), StringComparison.OrdinalIgnoreCase)));
             return viewEngine.Render(viewTemplate, model);
         }
 
@@ -34,15 +34,15 @@ namespace Carter.HtmlNegotiator
             return new ViewLocationContext
             {
                 RootPath = ((IHostingEnvironment)httpContext.RequestServices.GetService(typeof(IHostingEnvironment))).ContentRootPath,
-                ViewName = GetViewName(httpContext, model),
-                ModuleName = GetModuleName(httpContext.Items["ModuleType"] as Type)
+                ViewName = this.GetViewName(httpContext, model),
+                ModuleName = this.GetModuleName(httpContext.Items["ModuleType"] as Type)
             };
         }
 
         private string GetModuleName(Type moduleType)
         {
             var moduleTypeName = moduleType.ToString().Split('.').Last().ToLower();
-            return moduleTypeName.Substring(0, moduleTypeName.IndexOf("module"));
+            return moduleTypeName.Substring(0, moduleTypeName.IndexOf("module", StringComparison.Ordinal));
         }
 
         private string GetViewName(HttpContext httpContext, object model)

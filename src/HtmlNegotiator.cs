@@ -22,7 +22,7 @@
 
         public async Task Handle(HttpRequest req, HttpResponse res, object model, CancellationToken cancellationToken)
         {
-            var view = viewRenderer.RenderView(req.HttpContext, model);
+            var view = this.viewRenderer.RenderView(req.HttpContext, model);
             
             if (string.IsNullOrEmpty(view))
             {
