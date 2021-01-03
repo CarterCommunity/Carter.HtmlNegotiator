@@ -1,12 +1,11 @@
-﻿namespace HtmlNegotiator
-{
-    using System.Net;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Carter;
-    using HandlebarsDotNet;
-    using Microsoft.AspNetCore.Http;
+﻿using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
+using HandlebarsDotNet;
+using Microsoft.AspNetCore.Http;
 
+namespace Carter.HtmlNegotiator
+{
     public class HtmlNegotiator : IResponseNegotiator
     {
         private readonly IViewLocator viewLocator;

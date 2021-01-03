@@ -1,11 +1,11 @@
-﻿namespace HtmlNegotiator
-{
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using Microsoft.AspNetCore.Hosting;
-    using Microsoft.AspNetCore.Http;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 
+namespace Carter.HtmlNegotiator
+{
     public class DefaultViewLocator : IViewLocator
     {
         private readonly IDictionary<Type, string> mappings;

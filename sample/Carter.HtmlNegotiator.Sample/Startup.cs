@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Carter;
 
 namespace Carter.HtmlNegotiator.Sample
 {
@@ -13,6 +12,7 @@ namespace Carter.HtmlNegotiator.Sample
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCarter();
+            services.AddHtmlNegotiator();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
