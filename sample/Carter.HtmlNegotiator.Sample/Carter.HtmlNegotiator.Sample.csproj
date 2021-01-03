@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\dependencies\Carter\src\Carter\Carter.csproj" />
+    <ProjectReference Include="..\..\src\Carter.HtmlNegotiator\Carter.HtmlNegotiator.csproj" />
+  </ItemGroup>
+
+</Project>
