@@ -1,41 +1,35 @@
 ﻿using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using HandlebarsDotNet;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Net.Http.Headers;
 
 namespace Carter.HtmlNegotiator
 {
     public class HtmlNegotiator : IResponseNegotiator
     {
         private readonly IViewLocator viewLocator;
+        private readonly IViewEngine viewEngine;
 
-        public HtmlNegotiator(IViewLocator viewLocator)
+        public HtmlNegotiator(IViewLocator viewLocator, IViewEngine viewEngine)
         {
             this.viewLocator = viewLocator;
+            this.viewEngine = viewEngine;
         }
 
-        public bool CanHandle(Microsoft.Net.Http.Headers.MediaTypeHeaderValue accept)
+        public bool CanHandle(MediaTypeHeaderValue accept)
         {
             return accept.MediaType.Equals("text/html");
         }
 
         public async Task Handle(HttpRequest req, HttpResponse res, object model, CancellationToken cancellationToken)
         {
-            var source = viewLocator.GetView(model, res.HttpContext);
-            if (string.IsNullOrEmpty(source))
-            {
-                res.StatusCode = 500;
-                res.ContentType = "text/plain";
-                await res.WriteAsync("View not found", cancellationToken);
-            }
-
-            var template = Handlebars.Compile(source);
-
+            var template = viewLocator.GetView(req.HttpContext);
+            var html = viewEngine.Compile(template, model);
+            
             res.ContentType = "text/html";
             res.StatusCode = (int)HttpStatusCode.OK;
-
-            await res.WriteAsync(template(model), cancellationToken);
+            await res.WriteAsync(html, cancellationToken: cancellationToken);
         }
     }
 }

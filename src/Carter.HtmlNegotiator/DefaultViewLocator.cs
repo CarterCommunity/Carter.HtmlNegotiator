@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 
@@ -8,47 +6,12 @@ namespace Carter.HtmlNegotiator
 {
     public class DefaultViewLocator : IViewLocator
     {
-        private readonly IDictionary<Type, string> mappings;
-
-        private readonly IDictionary<Type, string> htmlMappings;
-
-        public DefaultViewLocator(IDictionary<Type, string> mappings)
+        public string GetView(HttpContext httpContext)
         {
-            this.mappings = mappings;
-            this.htmlMappings = new Dictionary<Type, string>();
-        }
-
-        public string GetView(object model, HttpContext httpContext)
-        {
-            string viewName = string.Empty;
-            try
-            {
-                viewName = this.mappings[model.GetType()];
-            }
-            catch (Exception)
-            {
-                return string.Empty;
-            }
-
-            if (this.htmlMappings.ContainsKey(model.GetType()))
-            {
-                return this.htmlMappings[model.GetType()];
-            }
-
-            var env = (IHostingEnvironment)httpContext.RequestServices.GetService(typeof(IHostingEnvironment));
-
-            try
-            {
-                var html = File.ReadAllText(Path.Combine(env.ContentRootPath, viewName));
-
-                this.htmlMappings.Add(model.GetType(), html);
-
-                return html;
-            }
-            catch (FileNotFoundException)
-            {
-                return string.Empty;
-            }
+            var viewName = "Features/Home/Index.hbs";
+            var env = httpContext.RequestServices.GetService(typeof(IWebHostEnvironment)) as IWebHostEnvironment;
+            return File.ReadAllText(Path.Combine(env.ContentRootPath, viewName));
+            
         }
     }
 }

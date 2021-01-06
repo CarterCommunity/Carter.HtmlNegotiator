@@ -8,7 +8,8 @@ namespace Carter.HtmlNegotiator
     {
         public static void AddHtmlNegotiator(this IServiceCollection services)
         {
-            services.AddScoped<IViewLocator>(p => new DefaultViewLocator(new Dictionary<Type, string>()));
+            services.AddScoped<IViewLocator, DefaultViewLocator>();
+            services.AddScoped<IViewEngine, HandlebarsViewEngine>();
             services.AddScoped<IResponseNegotiator, HtmlNegotiator>();
         }
     }
