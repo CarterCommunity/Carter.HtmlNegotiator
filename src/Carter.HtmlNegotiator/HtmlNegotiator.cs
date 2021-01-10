@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -10,6 +11,9 @@ namespace Carter.HtmlNegotiator
     {
         private readonly IViewLocator viewLocator;
         private readonly IViewEngine viewEngine;
+
+        private string notFoundError => @"The view '{0}' was not found. The following locations were searched:
+    {1}";
 
         public HtmlNegotiator(IViewLocator viewLocator, IViewEngine viewEngine)
         {
@@ -24,12 +28,21 @@ namespace Carter.HtmlNegotiator
 
         public async Task Handle(HttpRequest req, HttpResponse res, object model, CancellationToken cancellationToken)
         {
-            var template = viewLocator.GetView(req.HttpContext);
-            var html = viewEngine.Compile(template, model);
+            var result = viewLocator.GetView(req.HttpContext, "Index.hbs");
             
-            res.ContentType = "text/html";
-            res.StatusCode = (int)HttpStatusCode.OK;
-            await res.WriteAsync(html, cancellationToken: cancellationToken);
+            if (result.Success)
+            {
+                var html = viewEngine.Compile(result.View, model);
+                res.ContentType = "text/html";
+                res.StatusCode = (int)HttpStatusCode.OK;
+                await res.WriteAsync(html, cancellationToken: cancellationToken);
+            }
+            else
+            {
+                res.ContentType = "text/plain";
+                res.StatusCode = (int)HttpStatusCode.InternalServerError;
+                await res.WriteAsync(string.Format(notFoundError, result.ViewName, string.Join(Environment.NewLine, result.SearchedLocations)), cancellationToken: cancellationToken);
+            }
         }
     }
 }

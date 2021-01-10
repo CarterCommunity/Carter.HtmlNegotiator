@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Carter.HtmlNegotiator.Tests.Stubs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Net.Http.Headers;
+using Shouldly;
 using Xunit;
 
 namespace Carter.HtmlNegotiator.Tests
@@ -24,7 +25,7 @@ namespace Carter.HtmlNegotiator.Tests
 
             var result = this.htmlNegotiator.CanHandle(headerValue);
 
-            Assert.True(result);
+            result.ShouldBeTrue();
         }
 
         [Fact]
@@ -34,24 +35,43 @@ namespace Carter.HtmlNegotiator.Tests
 
             var result = this.htmlNegotiator.CanHandle(headerValue);
 
-            Assert.False(result);
+            result.ShouldBeFalse();
         }
 
         [Fact]
-        public async Task Should_Return_A_HTML_Response()
+        public async Task Should_Return_A_HTML_Response_When_A_View_Has_Been_Found()
         { 
             var httpContext = new DefaultHttpContext();
             httpContext.Response.Body = new MemoryStream();
 
             await this.htmlNegotiator.Handle(httpContext.Request, httpContext.Response, "Hello from Carter!", CancellationToken.None);
             
-            Assert.Equal(200, httpContext.Response.StatusCode);
-            Assert.Equal("text/html", httpContext.Response.ContentType);
+            httpContext.Response.StatusCode.ShouldBe(200);
+            httpContext.Response.ContentType.ShouldBe("text/html");
             
             httpContext.Response.Body.Position = 0;
             using var streamReader = new StreamReader(httpContext.Response.Body);
             var actualResponseText = await streamReader.ReadToEndAsync();
-            Assert.Contains("<h1>Hello from Carter!</h1>", actualResponseText);
+            actualResponseText.ShouldContain("<h1>Hello from Carter!</h1>");
+        }
+        
+        [Fact]
+        public async Task Should_Return_A_Error_Response_When_A_View_Has_Not_Been_Found()
+        { 
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Path = "/not-found";
+            httpContext.Response.Body = new MemoryStream();
+
+            await this.htmlNegotiator.Handle(httpContext.Request, httpContext.Response, "Hello from Carter!", CancellationToken.None);
+            
+            httpContext.Response.StatusCode.ShouldBe(500);
+            httpContext.Response.ContentType.ShouldBe("text/plain");
+            
+            httpContext.Response.Body.Position = 0;
+            using var streamReader = new StreamReader(httpContext.Response.Body);
+            var actualResponseText = await streamReader.ReadToEndAsync();
+            
+            actualResponseText.ShouldContain("The view 'Index.hbs' was not found.");
         }
     }
 }
