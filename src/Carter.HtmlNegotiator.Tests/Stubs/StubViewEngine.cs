@@ -4,9 +4,9 @@ namespace Carter.HtmlNegotiator.Tests.Stubs
     {
         public string Extension => "hbs";
 
-        public string Compile(string source, object model)
+        public string Compile(string viewLocation, object model)
         {
-            return string.Format(source, model);
+            return $"<!doctype html><html><body><h1>{model}</h1></body></html>";
         }
     }
 }

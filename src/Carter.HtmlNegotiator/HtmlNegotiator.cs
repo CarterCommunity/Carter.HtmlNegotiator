@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -33,12 +32,11 @@ namespace Carter.HtmlNegotiator
         public async Task Handle(HttpRequest req, HttpResponse res, object model, CancellationToken cancellationToken)
         {
             var viewName = this.viewNameResolver.Resolve(req.HttpContext, configuration.DefaultViewName, viewEngine.Extension);
-                
-            var result = viewLocator.GetView(req.HttpContext, viewName);
+            var viewLocation = viewLocator.GetViewLocation(req.HttpContext, configuration.ViewLocationConventions, viewName);
             
-            if (result.Success)
+            if (!string.IsNullOrEmpty(viewLocation))
             {
-                var html = viewEngine.Compile(result.View, model);
+                var html = viewEngine.Compile(viewLocation, model);
                 res.ContentType = "text/html";
                 res.StatusCode = (int)HttpStatusCode.OK;
                 await res.WriteAsync(html, cancellationToken: cancellationToken);
@@ -47,7 +45,7 @@ namespace Carter.HtmlNegotiator
             {
                 res.ContentType = "text/plain";
                 res.StatusCode = (int)HttpStatusCode.InternalServerError;
-                await res.WriteAsync(string.Format(notFoundError, result.ViewName, string.Join(Environment.NewLine, result.SearchedLocations)), cancellationToken: cancellationToken);
+                await res.WriteAsync(string.Format(notFoundError, viewName, string.Empty), cancellationToken: cancellationToken);
             }
         }
     }

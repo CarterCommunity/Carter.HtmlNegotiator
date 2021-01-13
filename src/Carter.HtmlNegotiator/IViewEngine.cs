@@ -4,6 +4,6 @@ namespace Carter.HtmlNegotiator
     {
         string Extension { get; }
         
-        string Compile(string source, object model);
+        string Compile(string viewLocation, object model);
     }
 }

@@ -5,11 +5,11 @@ namespace Carter.HtmlNegotiator.Tests.Stubs
 {
     public class StubViewLocator : IViewLocator
     {
-        public LocateViewResult GetView(HttpContext httpContext, string viewName)
+        public string GetViewLocation(HttpContext httpContext, IEnumerable<string> locationConventions, string viewName)
         {
-            return httpContext.Request.Path.HasValue 
-                ? LocateViewResult.NotFound(viewName, new List<string>()) 
-                : LocateViewResult.Found(viewName, "<!doctype html><html><body><h1>{0}</h1></body></html>");
+            return viewName != "not-found.hbs" 
+                ? "Views/Home/Index.hbs"
+                : null;
         }
     }
 }
