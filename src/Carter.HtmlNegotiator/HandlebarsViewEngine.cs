@@ -9,5 +9,7 @@ namespace Carter.HtmlNegotiator
             var template = Handlebars.Compile(source);
             return template(model);
         }
+
+        public string Extension => "hbs";
     }
 }

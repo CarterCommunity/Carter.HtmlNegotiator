@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,7 +16,7 @@ namespace Carter.HtmlNegotiator.Tests
 
         public HtmlNegotiatorTests()
         {
-            htmlNegotiator = new HtmlNegotiator(new StubViewLocator(), new StubViewEngine());
+            htmlNegotiator = new HtmlNegotiator(new ViewNameResolver(), new StubViewLocator(), new StubViewEngine(), new HtmlNegotiatorConfiguration(new List<string>()));
         }
         
         [Fact]
@@ -71,7 +72,7 @@ namespace Carter.HtmlNegotiator.Tests
             using var streamReader = new StreamReader(httpContext.Response.Body);
             var actualResponseText = await streamReader.ReadToEndAsync();
             
-            actualResponseText.ShouldContain("The view 'Index.hbs' was not found.");
+            actualResponseText.ShouldContain("The view 'not-found.hbs' was not found.");
         }
     }
 }

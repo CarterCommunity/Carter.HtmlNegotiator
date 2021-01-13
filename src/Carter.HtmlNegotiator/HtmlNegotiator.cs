@@ -9,16 +9,20 @@ namespace Carter.HtmlNegotiator
 {
     public class HtmlNegotiator : IResponseNegotiator
     {
+        private readonly ViewNameResolver viewNameResolver;
         private readonly IViewLocator viewLocator;
         private readonly IViewEngine viewEngine;
+        private readonly HtmlNegotiatorConfiguration configuration;
 
         private string notFoundError => @"The view '{0}' was not found. The following locations were searched:
     {1}";
 
-        public HtmlNegotiator(IViewLocator viewLocator, IViewEngine viewEngine)
+        public HtmlNegotiator(ViewNameResolver viewNameResolver, IViewLocator viewLocator, IViewEngine viewEngine, HtmlNegotiatorConfiguration configuration)
         {
+            this.viewNameResolver = viewNameResolver;
             this.viewLocator = viewLocator;
             this.viewEngine = viewEngine;
+            this.configuration = configuration;
         }
 
         public bool CanHandle(MediaTypeHeaderValue accept)
@@ -28,7 +32,9 @@ namespace Carter.HtmlNegotiator
 
         public async Task Handle(HttpRequest req, HttpResponse res, object model, CancellationToken cancellationToken)
         {
-            var result = viewLocator.GetView(req.HttpContext, "Index.hbs");
+            var viewName = this.viewNameResolver.Resolve(req.HttpContext, configuration.DefaultViewName, viewEngine.Extension);
+                
+            var result = viewLocator.GetView(req.HttpContext, viewName);
             
             if (result.Success)
             {
