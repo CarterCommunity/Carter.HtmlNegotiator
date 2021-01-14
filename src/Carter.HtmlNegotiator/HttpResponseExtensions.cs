@@ -6,7 +6,7 @@ namespace Carter.HtmlNegotiator
     {
         public static HttpResponse WithView(this HttpResponse response, string viewPath)
         {
-            //response.HttpContext.Items.Add("");
+            response.HttpContext.Items.Add(Constants.ViewNameKey, viewPath);
             return response;
         }
     }

@@ -29,6 +29,19 @@ namespace Carter.HtmlNegotiator.Tests
             result.ShouldBe("my-view.hbs");
         }
         
+        [Fact]
+        public void Should_Not_Append_Extension_When_Included_In_HttpContext()
+        {
+            var subject = new ViewNameResolver();
+
+            var context = new DefaultHttpContext();
+            context.Items.Add(Constants.ViewNameKey, "my-view.hbs");
+            
+            var result = subject.Resolve(context, "Index", "hbs");
+            
+            result.ShouldBe("my-view.hbs");
+        }
+        
         [Theory]
         [InlineData(null, "Index.hbs")]
         [InlineData("", "Index.hbs")]

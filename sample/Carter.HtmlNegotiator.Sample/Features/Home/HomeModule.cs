@@ -9,11 +9,11 @@ namespace Carter.HtmlNegotiator.Sample.Features.Home
         {
             Get("/", (request, response) => response.Negotiate(new {}));
 
-            Get("/{msg}", (request, response) => response
+            Get("/echo", (request, response) => response
                 .WithView("Echo.hbs")
                 .Negotiate(new EchoViewModel
                 {
-                    Message = request.RouteValues.As<string>("msg")
+                    Message = request.Query.As<string>("msg")
                 })
             );
         }

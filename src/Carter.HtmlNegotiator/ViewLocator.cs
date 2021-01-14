@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 
@@ -20,7 +21,12 @@ namespace Carter.HtmlNegotiator
 
             var resource = GetResourceNameFromPath(httpContext.Request.Path);
             resource ??= rootResourceName;
-
+            
+            if (viewName.StartsWith(resource, StringComparison.InvariantCultureIgnoreCase))
+            {
+                resource = rootResourceName;
+            }
+            
             var locatedViews = new List<string>();
             var searchedLocations = new List<string>();
             

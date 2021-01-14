@@ -9,13 +9,14 @@ namespace Carter.HtmlNegotiator
     {
         public string Resolve(HttpContext context, string defaultViewName, string extension)
         {
-            context.Items.TryGetValue(Constants.ViewNameKey, out var viewName);
+            context.Items.TryGetValue(Constants.ViewNameKey, out var value);
 
-            viewName ??= GetViewFromPath(context.Request.Path);
+            value ??= GetViewFromPath(context.Request.Path) ?? defaultViewName;
 
-            viewName ??= defaultViewName;
-            
-            return $"{viewName}.{extension}";
+            var viewName = value as string;
+            return viewName.EndsWith(extension) 
+            ? viewName
+            : $"{viewName}.{extension}";
         }
 
         private string GetViewFromPath(PathString path)

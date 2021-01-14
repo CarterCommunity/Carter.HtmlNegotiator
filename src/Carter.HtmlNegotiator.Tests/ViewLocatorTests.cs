@@ -55,17 +55,21 @@ namespace Carter.HtmlNegotiator.Tests
         [Theory]
         [InlineData("/Products", "Index.hbs", "Views/Products/Index.hbs")]
         [InlineData("/Orders/Checkout", "Checkout.hbs", "Views/Orders/Checkout.hbs")]
+        [InlineData("/Echo", "Echo.hbs", "Views/Home/Echo.hbs")]
         public void Should_Be_Able_To_Resolve_Resource_Name_From_Request_Path(string requestPath, string viewName, string expected)
         {
             var fileSystem = new StubFileSystem(new []
             {
+                "Views/Home/Echo.hbs",
                 "Views/Products/Index.hbs",
                 "Views/Orders/Checkout.hbs"
             });
+            
             var subject = new ViewLocator(fileSystem);
-
+            
             var context = new DefaultHttpContext();
             context.Request.Path = requestPath;
+            
             var result  = subject.GetViewLocation(context, new []{ "Views/{resource}/{view}" }, "Home", viewName);
             
             result.ShouldNotBeNull();

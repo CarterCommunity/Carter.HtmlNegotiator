@@ -4,7 +4,7 @@ namespace Carter.HtmlNegotiator
 {
     public class HtmlNegotiatorConfiguration
     {
-        public HtmlNegotiatorConfiguration(List<string> viewLocationConventions)
+        public HtmlNegotiatorConfiguration(IEnumerable<string> viewLocationConventions)
         {
             DefaultViewName = "Index";
             RootResourceName = "Home";
@@ -13,9 +13,9 @@ namespace Carter.HtmlNegotiator
         
         public string DefaultViewName { get; }
         
-        public string RootResourceName { get; set; }
+        public string RootResourceName { get; }
         
-        public List<string> ViewLocationConventions { get; }
+        public IEnumerable<string> ViewLocationConventions { get; }
         
     }
 }
