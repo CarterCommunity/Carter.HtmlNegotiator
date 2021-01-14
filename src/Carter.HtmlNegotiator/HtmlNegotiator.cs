@@ -32,7 +32,7 @@ namespace Carter.HtmlNegotiator
         public async Task Handle(HttpRequest req, HttpResponse res, object model, CancellationToken cancellationToken)
         {
             var viewName = this.viewNameResolver.Resolve(req.HttpContext, configuration.DefaultViewName, viewEngine.Extension);
-            var viewLocation = viewLocator.GetViewLocation(req.HttpContext, configuration.ViewLocationConventions, viewName);
+            var viewLocation = viewLocator.GetViewLocation(req.HttpContext, configuration.ViewLocationConventions, configuration.RootResourceName, viewName);
             
             if (!string.IsNullOrEmpty(viewLocation))
             {

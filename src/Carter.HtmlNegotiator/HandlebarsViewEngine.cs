@@ -1,4 +1,5 @@
 using System.IO;
+using System.Text;
 using HandlebarsDotNet;
 
 namespace Carter.HtmlNegotiator
@@ -7,7 +8,7 @@ namespace Carter.HtmlNegotiator
     {
         public string Compile(string viewLocation, object model)
         {
-            var source = File.ReadAllText(viewLocation);
+            var source = File.ReadAllText(viewLocation, Encoding.UTF8);
             var template = Handlebars.Compile(source);
             return template(model);
         }

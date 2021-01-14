@@ -5,6 +5,7 @@ namespace Carter.HtmlNegotiator
 {
     public interface IViewLocator
     {
-        string GetViewLocation(HttpContext httpContext, IEnumerable<string> locationConventions, string viewName);
+        string GetViewLocation(HttpContext httpContext, IEnumerable<string> locationConventions,
+            string rootResourceName, string viewName);
     }
 }
