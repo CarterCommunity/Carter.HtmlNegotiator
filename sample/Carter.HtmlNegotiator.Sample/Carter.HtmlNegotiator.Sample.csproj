@@ -9,4 +9,13 @@
     <ProjectReference Include="..\..\src\Carter.HtmlNegotiator\Carter.HtmlNegotiator.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\css" />
+    <Folder Include="wwwroot\js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\css\style.css" />
+  </ItemGroup>
+
 </Project>

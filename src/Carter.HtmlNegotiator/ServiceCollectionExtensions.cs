@@ -11,13 +11,13 @@ namespace Carter.HtmlNegotiator
             services.AddScoped<ViewNameResolver>();
             services.AddScoped<IViewLocator, ViewLocator>();
             services.AddScoped<IFileSystem, FileSystem>();
-            services.AddScoped<IViewEngine, HandlebarsViewEngine>();
             services.AddScoped(p => new HtmlNegotiatorConfiguration(new[]
             {
                 "Views/{resource}/{view}",
                 "Features/{resource}/{view}",
                 "Features/{resource}/Views/{view}"
             }));
+            services.AddScoped<IViewEngine, HandlebarsViewEngine>();
             services.AddScoped<IResponseNegotiator, HtmlNegotiator>();
         }
     }

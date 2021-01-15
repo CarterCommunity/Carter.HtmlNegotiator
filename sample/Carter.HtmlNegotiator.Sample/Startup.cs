@@ -23,8 +23,8 @@ namespace Carter.HtmlNegotiator.Sample
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseStaticFiles();
             app.UseRouting();
-
             app.UseEndpoints(builder => builder.MapCarter());
         }
     }

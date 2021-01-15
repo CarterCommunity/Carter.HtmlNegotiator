@@ -7,7 +7,11 @@ namespace Carter.HtmlNegotiator.Sample.Features.Home
     {
         public HomeModule()
         {
-            Get("/", (request, response) => response.Negotiate(new {}));
+            Get("/", (request, response) => response.Negotiate(new
+            {
+                Title = "Welcome To Carter", 
+                Message = "Hello From Carter!"
+            }));
 
             Get("/echo", (request, response) => response
                 .WithView("Echo.hbs")

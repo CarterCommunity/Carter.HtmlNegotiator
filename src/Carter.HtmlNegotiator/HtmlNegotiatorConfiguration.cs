@@ -9,6 +9,7 @@ namespace Carter.HtmlNegotiator
             DefaultViewName = "Index";
             RootResourceName = "Home";
             ViewLocationConventions = viewLocationConventions;
+            PartialLocations = new[] {"Shared", "Views/Shared"};
         }
         
         public string DefaultViewName { get; }
@@ -16,6 +17,8 @@ namespace Carter.HtmlNegotiator
         public string RootResourceName { get; }
         
         public IEnumerable<string> ViewLocationConventions { get; }
+        
+        public IEnumerable<string> PartialLocations { get; }
         
     }
 }
