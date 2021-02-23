@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,19 +11,13 @@ namespace Carter.HtmlNegotiator.Tests
 {
     public class HtmlNegotiatorTests
     {
-        private readonly HtmlNegotiator htmlNegotiator;
-
-        public HtmlNegotiatorTests()
-        {
-            htmlNegotiator = new HtmlNegotiator(new ViewNameResolver(), new StubViewLocator(), new StubViewEngine(), new HtmlNegotiatorConfiguration(new List<string>()));
-        }
-        
         [Fact]
         public void Should_Be_Able_To_Handle_Requests_With_A_HTML_MediaType()
         {
             var headerValue = new MediaTypeHeaderValue("text/html");
+            var htmlNegotiator = new HtmlNegotiator(new StubViewEngine());
 
-            var result = this.htmlNegotiator.CanHandle(headerValue);
+            var result = htmlNegotiator.CanHandle(headerValue);
 
             result.ShouldBeTrue();
         }
@@ -33,8 +26,9 @@ namespace Carter.HtmlNegotiator.Tests
         public void Should_Not_Be_Able_To_Handle_Requests_Other_MediaTypes()
         {
             var headerValue = new MediaTypeHeaderValue("application/json");
+            var htmlNegotiator = new HtmlNegotiator(new StubViewEngine());
 
-            var result = this.htmlNegotiator.CanHandle(headerValue);
+            var result = htmlNegotiator.CanHandle(headerValue);
 
             result.ShouldBeFalse();
         }
@@ -44,8 +38,9 @@ namespace Carter.HtmlNegotiator.Tests
         { 
             var httpContext = new DefaultHttpContext();
             httpContext.Response.Body = new MemoryStream();
+            var htmlNegotiator = new HtmlNegotiator(new StubViewEngine());            
 
-            await this.htmlNegotiator.Handle(httpContext.Request, httpContext.Response, "Hello from Carter!", CancellationToken.None);
+            await htmlNegotiator.Handle(httpContext.Request, httpContext.Response, "Hello from Carter!", CancellationToken.None);
             
             httpContext.Response.StatusCode.ShouldBe(200);
             httpContext.Response.ContentType.ShouldBe("text/html");
@@ -57,15 +52,16 @@ namespace Carter.HtmlNegotiator.Tests
         }
         
         [Fact]
-        public async Task Should_Return_A_Error_Response_When_A_View_Has_Not_Been_Found()
+        public async Task Should_Return_A_404_Response_When_A_View_Has_Not_Been_Found()
         { 
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Path = "/not-found";
             httpContext.Response.Body = new MemoryStream();
+            var htmlNegotiator = new HtmlNegotiator(new StubViewEngine(true));
 
-            await this.htmlNegotiator.Handle(httpContext.Request, httpContext.Response, "Hello from Carter!", CancellationToken.None);
+            await htmlNegotiator.Handle(httpContext.Request, httpContext.Response, "Hello from Carter!", CancellationToken.None);
             
-            httpContext.Response.StatusCode.ShouldBe(500);
+            httpContext.Response.StatusCode.ShouldBe(404);
             httpContext.Response.ContentType.ShouldBe("text/plain");
             
             httpContext.Response.Body.Position = 0;

@@ -1,44 +1,51 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 
 namespace Carter.HtmlNegotiator
 {
-    public class ViewLocator : IViewLocator
+    public class ViewResolver : IViewResolver
     {
         private readonly IFileSystem fileSystem;
+        private readonly IWebHostEnvironment env;
+        private readonly HtmlNegotiatorConfiguration configuration;
 
-        public ViewLocator(IFileSystem fileSystem)
+        public ViewResolver(IFileSystem fileSystem, IWebHostEnvironment env, HtmlNegotiatorConfiguration configuration)
         {
             this.fileSystem = fileSystem;
+            this.env = env;
+            this.configuration = configuration;
         }
 
-        public string GetViewLocation(HttpContext httpContext, IEnumerable<string> locationConventions, string rootResourceName, string viewName)
+        public string GetView(HttpContext httpContext, string viewName)
         {
             if (string.IsNullOrEmpty(viewName))
                 return null;
 
             var resource = GetResourceNameFromPath(httpContext.Request.Path);
-            resource ??= rootResourceName;
+            resource ??= configuration.RootResourceName;
             
             if (viewName.StartsWith(resource, StringComparison.InvariantCultureIgnoreCase))
             {
-                resource = rootResourceName;
+                resource = configuration.RootResourceName;
             }
             
             var locatedViews = new List<string>();
             var searchedLocations = new List<string>();
             
-            foreach (var convention in locationConventions)
+            foreach (var convention in configuration.ViewLocationConventions)
             {
                 var path = convention
-                    .Replace("{resource}", resource)
-                    .Replace("{view}", viewName);
-                
-                if (this.fileSystem.FileExists(path))
+                    .Replace($"{{{Constants.ResourceNameKey}}}", resource)
+                    .Replace($"{{{Constants.ViewNameKey}}}", viewName);
+
+                var fullPath = Path.Combine(env.ContentRootPath, path);
+                if (this.fileSystem.FileExists(fullPath))
                 {
-                    locatedViews.Add(path);
+                    locatedViews.Add(fullPath);
                 }
                 searchedLocations.Add(path);
             }
@@ -53,7 +60,7 @@ namespace Carter.HtmlNegotiator
                 throw new AmbiguousViewsException(locatedViews);
             }
             
-            return locatedViews.First();
+            return fileSystem.ReadFileContents(locatedViews.First());
         }
 
         private string GetResourceNameFromPath(PathString path)

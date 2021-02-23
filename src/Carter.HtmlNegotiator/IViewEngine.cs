@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Http;
+
 namespace Carter.HtmlNegotiator
 {
     public interface IViewEngine
     {
         string Extension { get; }
         
-        string Compile(string viewLocation, object model);
+        string GetView(HttpContext httpContext, object model);
     }
 }

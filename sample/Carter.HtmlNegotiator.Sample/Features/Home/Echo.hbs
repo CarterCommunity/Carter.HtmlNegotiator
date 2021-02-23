@@ -1,13 +1,5 @@
-{{#> layouts/base title="Echo Page" }}
-    {{#*inline "hero-block"}}
-        <div class="example-wrapper clearfix">
-            <h3>Echo: {{Message}}</h3>
-            <div class="demo-wrapper">
-                <div class="block-level gradient-light-linear">Light Linear</div>
-                <div class="block-level gradient-dark-linear">Dark Linear</div>
-                <div class="block-level gradient-light-radial">Light Radial</div>
-                <div class="block-level gradient-dark-radial">Dark Radial</div>
-            </div>
-        </div>
-    {{/inline}}
-{{/layouts/base}}
+{{#*inline "content"}}
+    <div class="container">
+        <h3>Echo: {{Message}}</h3>
+    </div>
+{{/inline}}

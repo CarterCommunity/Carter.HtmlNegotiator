@@ -1,84 +1,34 @@
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using HandlebarsDotNet;
+using Microsoft.AspNetCore.Http;
 
 namespace Carter.HtmlNegotiator
 {
     public class HandlebarsViewEngine : IViewEngine
     {
-        private IHandlebars handlebars;
+        private readonly IHandlebars handlebars;
+        private readonly IViewResolver viewResolver;
+        private readonly ViewNameResolver viewNameResolver;
+        private readonly HtmlNegotiatorConfiguration configuration;
+        
 
-        public HandlebarsViewEngine()
+        public HandlebarsViewEngine(IHandlebars handlebars, IViewResolver viewResolver,
+            ViewNameResolver viewNameResolver, HtmlNegotiatorConfiguration configuration)
         {
-            handlebars = Handlebars.Create(new HandlebarsConfiguration
-            {
-                PartialTemplateResolver = new CustomPartialResolver()
-            });
+            this.handlebars = handlebars;            
+            this.viewResolver = viewResolver;
+            this.viewNameResolver = viewNameResolver;
+            this.configuration = configuration;
         }
         
         public string Extension => "hbs";
 
-        public string Compile(string viewLocation, object model)
+        public string GetView(HttpContext httpContext, object model)
         {
-            var layout = GetLayout();
-            var page = File.ReadAllText(viewLocation, Encoding.UTF8);
-            var template = handlebars.Compile(page + layout);
+            var layout = viewResolver.GetView(httpContext, $"{configuration.DefaultLayoutName}.{Extension}");
+            var view = viewResolver.GetView(httpContext, viewNameResolver.Resolve(httpContext, Extension));
+            var template = handlebars.Compile(string.Concat(view, layout));
+            
             return template(model);
-        }
-
-        private string GetLayout()
-        {
-            var layoutPath = "Shared/Layout";
-            var files = new List<FileInfo>();
-
-            if (Directory.Exists(layoutPath))
-            {
-                files.AddRange(GetFiles(layoutPath, Extension));
-            }
-            return File.ReadAllText(files.First().FullName);
-        }
-        
-        private static FileInfo[] GetFiles(string directoryPath, string desiredExtension)
-        {
-            var directoryInfo = new DirectoryInfo(directoryPath);
-            return directoryInfo.GetFiles($"*.{desiredExtension}");
-        }
-    }
-    
-    public class CustomPartialResolver : IPartialTemplateResolver
-    {
-        private IEnumerable<string> partialPaths = new[]
-        {
-            "Shared",
-            "Views/Shared"
-        };
-        
-        public bool TryRegisterPartial(IHandlebars env, string partialName, string templatePath)
-        {
-            var partials = new List<string>();
-            
-            foreach (var path in partialPaths)
-            {
-                var combine = Path.Combine(path, $"{partialName}.hbs");
-                if (File.Exists(combine))
-                {
-                    partials.Add(combine);
-                }
-            }
-
-            if (!partials.Any())
-            {
-                return false;
-            }
-            
-            foreach (var p in partials)
-            {
-                var template = File.ReadAllText(p, Encoding.UTF8);
-                env.RegisterTemplate(partialName, template);
-            }
-            return true;
         }
     }
 }

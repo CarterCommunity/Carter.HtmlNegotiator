@@ -1,5 +1,5 @@
-using System;
-using System.Collections.Generic;
+using HandlebarsDotNet;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Carter.HtmlNegotiator
@@ -8,15 +8,26 @@ namespace Carter.HtmlNegotiator
     {
         public static void AddHtmlNegotiator(this IServiceCollection services)
         {
-            services.AddScoped<ViewNameResolver>();
-            services.AddScoped<IViewLocator, ViewLocator>();
-            services.AddScoped<IFileSystem, FileSystem>();
             services.AddScoped(p => new HtmlNegotiatorConfiguration(new[]
             {
-                "Views/{resource}/{view}",
-                "Features/{resource}/{view}",
-                "Features/{resource}/Views/{view}"
+                "Views/{View}",
+                "Views/Shared/{View}",
+                "Views/{Resource}/{View}",
+                "Features/{View}",
+                "Features/Shared/{View}",
+                "Features/{Resource}/{View}"
             }));
+            
+            services.AddScoped<ViewNameResolver>();
+            services.AddScoped<IViewResolver, ViewResolver>();
+            services.AddScoped<IFileSystem, FileSystem>();
+            services.AddScoped<IPartialTemplateResolver, PartialTemplateResolver>();
+
+            services.AddScoped(p => Handlebars.Create(new HandlebarsConfiguration
+            {
+                PartialTemplateResolver = p.GetService<IPartialTemplateResolver>()
+            }));
+            
             services.AddScoped<IViewEngine, HandlebarsViewEngine>();
             services.AddScoped<IResponseNegotiator, HtmlNegotiator>();
         }
