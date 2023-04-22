@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carter.HtmlNegotiator", "src\Carter.HtmlNegotiator.csproj", "{56B4E7C9-9EE7-43F8-81FC-5E3E53185A0F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{03A03A0C-A771-42AB-912C-1A7983A6ADAC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RazorSample", "samples\RazorSample\RazorSample.csproj", "{65BADB67-35B3-427A-A7DB-D4D8722F502A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{56B4E7C9-9EE7-43F8-81FC-5E3E53185A0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56B4E7C9-9EE7-43F8-81FC-5E3E53185A0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56B4E7C9-9EE7-43F8-81FC-5E3E53185A0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56B4E7C9-9EE7-43F8-81FC-5E3E53185A0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65BADB67-35B3-427A-A7DB-D4D8722F502A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65BADB67-35B3-427A-A7DB-D4D8722F502A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65BADB67-35B3-427A-A7DB-D4D8722F502A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65BADB67-35B3-427A-A7DB-D4D8722F502A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{65BADB67-35B3-427A-A7DB-D4D8722F502A} = {03A03A0C-A771-42AB-912C-1A7983A6ADAC}
+	EndGlobalSection
+EndGlobal
