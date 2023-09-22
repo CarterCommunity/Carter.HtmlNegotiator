@@ -34,13 +34,13 @@ public class RazorResponseNegotiator : IResponseNegotiator
                 viewLocation += "/" + s[0].ToString().ToUpper() + s[Range.StartAt(1)];
             }
             
-            var result = Results.Extensions.RazorSlice(viewLocation, model);
+            var result = Results.Extensions.RazorSlice(viewLocation, model, res.StatusCode);
             await result.ExecuteAsync(res.HttpContext);
         }
         else
         {
             var viewLocation = "/Slices";
-            var result = Results.Extensions.RazorSlice(viewLocation + viewName!, model);
+            var result = Results.Extensions.RazorSlice(viewLocation + viewName!, model, res.StatusCode);
             await result.ExecuteAsync(res.HttpContext);
         }
        
